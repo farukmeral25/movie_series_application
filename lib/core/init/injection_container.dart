@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:movie_series_application/core/_core_exports.dart';
-import 'package:movie_series_application/feature/home/viewmodel/_viewmodel_exports.dart';
+import 'package:movie_series_application/feature/_feature_exports.dart';
+import 'package:movie_series_application/feature/home/domain/usecase/fetch_tv_show_detail_usecase.dart';
 
 final serviceLocator = GetIt.instance;
 
@@ -24,5 +25,10 @@ Future<void> init() async {
 
   //? Home
 
-  serviceLocator.registerLazySingleton<HomeProvider>(() => HomeProvider());
+  serviceLocator.registerLazySingleton<HomeRepository>(() => HomeRepoImplements(mainBaseGet: serviceLocator()));
+  serviceLocator.registerLazySingleton(() => FetchPopulerMovieUsecase(homeRepository: serviceLocator()));
+  serviceLocator.registerLazySingleton(() => FetchPopulerTvShowUsecase(homeRepository: serviceLocator()));
+  serviceLocator.registerLazySingleton(() => FetchTvShowDetailUsecase(homeRepository: serviceLocator()));
+  serviceLocator
+      .registerLazySingleton<HomeProvider>(() => HomeProvider(serviceLocator(), serviceLocator(), serviceLocator()));
 }
