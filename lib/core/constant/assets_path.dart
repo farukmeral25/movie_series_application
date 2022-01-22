@@ -1,5 +1,5 @@
 class AssetsPath {
-  static AssetsPath _instance = AssetsPath._init();
+  static final AssetsPath _instance = AssetsPath._init();
   AssetsPath._init();
 
   factory AssetsPath() {
