@@ -1,21 +1,25 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, curly_braces_in_flow_control_structures
 
 import 'package:movie_series_application/core/_core_exports.dart';
+import 'package:movie_series_application/core/init/_init_exports.dart';
 import 'package:movie_series_application/feature/_feature_exports.dart';
 import 'package:provider/provider.dart';
 
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   const HomeAppBar({
     Key? key,
-    required this.content,
+    this.contentIndex,
+    this.type,
     this.isDetail = false,
   }) : super(key: key);
   final bool isDetail;
-  final Content content;
+  final int? contentIndex;
+  final ContentEnum? type;
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
       automaticallyImplyLeading: false,
+      backgroundColor: AppColors.saltBlack,
       actions: [
         if (isDetail) ...[
           Padding(
@@ -51,14 +55,12 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                       children: [
                         CircleAvatar(
                           radius: 18,
-                          backgroundColor: homeProvider.colorFromPoints(
-                            content.contentPoints,
-                          ),
+                          backgroundColor: homeProvider.colorFromPoints(getVoteAverage()),
                           child: CircleAvatar(
                             radius: 15,
                             backgroundColor: AppColors.saltBlack,
                             child: Text(
-                              content.contentPoints.toString(),
+                              getVoteAverage().toString(),
                               style: AppTextStyles.latoBold18Pt.copyWith(
                                 fontSize: 12,
                                 color: AppColors.white,
@@ -71,14 +73,20 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                content.contentName,
-                                style: AppTextStyles.latoBold18Pt.copyWith(
-                                  color: AppColors.saltWhite,
+                              SizedBox(
+                                width: ScreenSize().getWidthPercent(.5),
+                                child: Text(
+                                  type == ContentEnum.MOVIE
+                                      ? serviceLocator<HomeProvider>().movieContents[contentIndex!].originalTitle
+                                      : serviceLocator<HomeProvider>().tvShowContent.originalTitle!,
+                                  style: AppTextStyles.latoBold18Pt.copyWith(
+                                    color: AppColors.saltWhite,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                               Text(
-                                content.contentType.contentTypeText(),
+                                type!.contentTypeText(),
                                 style: AppTextStyles.latoBold18Pt.copyWith(
                                   fontSize: 14,
                                   color: AppColors.softGrey,
@@ -93,14 +101,17 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          homeProvider.latestContent.contentName,
-                          style: AppTextStyles.latoBold18Pt.copyWith(
-                            color: AppColors.saltWhite,
+                        SizedBox(
+                          width: ScreenSize().getWidthPercent(.6),
+                          child: Text(
+                            homeProvider.latestMovieContent.originalTitle,
+                            style: AppTextStyles.latoBold18Pt.copyWith(
+                              color: AppColors.saltWhite,
+                            ),
                           ),
                         ),
                         Text(
-                          homeProvider.latestContent.contentType.contentTypeText(),
+                          homeProvider.latestMovieContent.type!.contentTypeText(),
                           style: AppTextStyles.latoBold18Pt.copyWith(
                             fontSize: 14,
                             color: AppColors.softGrey,
@@ -130,7 +141,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
         children: [
           Consumer<HomeProvider>(builder: (context, HomeProvider homeProvider, child) {
             return Image.network(
-              content.contentImage,
+              getPosterPath(),
               fit: BoxFit.fill,
               height: ScreenSize().getHeightPercent(.45),
               width: ScreenSize().getWidthPercent(1),
@@ -157,6 +168,25 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
         ],
       ),
     );
+  }
+
+  double getVoteAverage() {
+    if (type == ContentEnum.MOVIE) {
+      return serviceLocator<HomeProvider>().movieContents[contentIndex!].voteAverage;
+    } else if (type == ContentEnum.TVSHOW) {
+      return serviceLocator<HomeProvider>().tvShowContent.voteAverage!;
+    } else
+      return 0;
+  }
+
+  String getPosterPath() {
+    if (type == ContentEnum.MOVIE) {
+      return serviceLocator<HomeProvider>().movieContents[contentIndex!].posterPath;
+    } else if (type == ContentEnum.TVSHOW) {
+      return serviceLocator<HomeProvider>().tvShowContent.posterPath;
+    } else {
+      return serviceLocator<HomeProvider>().latestMovieContent.posterPath;
+    }
   }
 
   @override
