@@ -7,7 +7,7 @@ import 'package:movie_series_application/core/_core_exports.dart';
 
 class MainRequestImpl implements BaseRequestRepository {
   late final Dio _client;
-  final String domainUrl = DomainResourceEnum.GOOGLEMAP.getUrlByState();
+  final String domainUrl = DomainResourceEnum.MOVIEDB.getUrlByState();
 
   MainRequestImpl(
     this._client,
