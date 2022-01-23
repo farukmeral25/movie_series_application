@@ -56,7 +56,7 @@ class _TvShowMovieDetailPageState extends State<TvShowMovieDetailPage> {
                                 Padding(
                                   padding: const EdgeInsets.only(top: 6.0, bottom: 20),
                                   child: Text(
-                                    DateUtil().dateToIDayIMonthIYear(date: getDateTime()),
+                                    DateUtil().dateToIDayIMonthIYear(date: _getDateTime()),
                                     style: AppTextStyles.latoBold18Pt.copyWith(
                                       color: AppColors.white,
                                     ),
@@ -73,7 +73,7 @@ class _TvShowMovieDetailPageState extends State<TvShowMovieDetailPage> {
                                   ),
                                 ),
                                 Text(
-                                  getOverview(),
+                                  _getOverview(),
                                   style: AppTextStyles.latoBold18Pt.copyWith(
                                     fontSize: 14,
                                     color: AppColors.saltWhite,
@@ -92,7 +92,7 @@ class _TvShowMovieDetailPageState extends State<TvShowMovieDetailPage> {
     );
   }
 
-  String getOverview() {
+  String _getOverview() {
     if (widget.type == ContentEnum.TVSHOW) {
       return serviceLocator<HomeProvider>().tvShowContent.overview!;
     } else {
@@ -100,7 +100,7 @@ class _TvShowMovieDetailPageState extends State<TvShowMovieDetailPage> {
     }
   }
 
-  DateTime getDateTime() {
+  DateTime _getDateTime() {
     if (widget.type == ContentEnum.TVSHOW) {
       return serviceLocator<HomeProvider>().tvShowContent.firstAirDate!;
     } else {

@@ -7,18 +7,18 @@ import 'package:movie_series_application/feature/_feature_exports.dart';
 
 class HomeProvider with ChangeNotifier {
   HomeProvider(this._fetchPopulerMovieUsecase, this._fetchPopulerTvShowUsecase, this._fetchTvShowDetailUsecase) {
-    fetchTvShowContent();
-    fetchMovieContent().then((value) {
-      getLatestContent();
+    _fetchTvShowContent();
+    _fetchMovieContent().then((value) {
+      _getLatestContent();
     });
     movieScrollController.addListener(() {
       if (movieScrollController.position.pixels == movieScrollController.position.maxScrollExtent) {
-        fetchMovieContent();
+        _fetchMovieContent();
       }
     });
     tvShowScrollController.addListener(() {
       if (tvShowScrollController.position.pixels == tvShowScrollController.position.maxScrollExtent) {
-        fetchTvShowContent();
+        _fetchTvShowContent();
       }
       notifyListeners();
     });
@@ -44,8 +44,8 @@ class HomeProvider with ChangeNotifier {
   //* atadığımız imageleri , daha önce çektiğimiz verilere de tekrar random image vermesini
   //* önlemek için böyle bir yola başvuruldu. Bu yolda son yapılan listenin lenghti bu indexlere veriliyor.
   //* Böylece tekrar tekrar imagelere görsel verilmiyor.
-  int tvShowIndex = 0;
-  int movieIndex = 0;
+  int _tvShowIndex = 0;
+  int _movieIndex = 0;
 
   //* Texts
 
@@ -83,7 +83,7 @@ class HomeProvider with ChangeNotifier {
   }
 
   /// Son eklenen filmin ana ekranda gösterilmesini sağlayan method.
-  void getLatestContent() {
+  void _getLatestContent() {
     latestMovieContent = movieContents[0];
     for (var i = 0; i < movieContents.length - 1; i++) {
       if (latestMovieContent.releaseDate.isBefore(movieContents[i + 1].releaseDate)) {
@@ -98,29 +98,29 @@ class HomeProvider with ChangeNotifier {
   //! Future Methods
 
   /// Popüler Film verilerini çeker.
-  Future<void> fetchMovieContent() async {
+  Future<void> _fetchMovieContent() async {
     MainEndpoints.FETCH_POPULER_MOVIE.appendPage();
     final fetchMovieContentEither = await _fetchPopulerMovieUsecase(const NoParams());
     return fetchMovieContentEither.fold((failure) {}, (data) {
       movieContents.addAll(data);
-      for (var i = movieIndex; i < movieContents.length; i++) {
+      for (var i = _movieIndex; i < movieContents.length; i++) {
         movieContents[i].posterPath = posterPaths[Random().nextInt(7)];
       }
-      movieIndex = movieContents.length;
+      _movieIndex = movieContents.length;
       notifyListeners();
     });
   }
 
   /// Popüler Tv Show verilerini çeker.
-  Future<void> fetchTvShowContent() async {
+  Future<void> _fetchTvShowContent() async {
     MainEndpoints.FETCH_POPULER_TV_SHOW.appendPage();
     final fetchTvShowContentEither = await _fetchPopulerTvShowUsecase(const NoParams());
     return fetchTvShowContentEither.fold((failure) {}, (data) {
       tvShowContents.addAll(data);
-      for (var i = tvShowIndex; i < tvShowContents.length; i++) {
+      for (var i = _tvShowIndex; i < tvShowContents.length; i++) {
         tvShowContents[i].posterPath = posterPaths[Random().nextInt(7)];
       }
-      tvShowIndex = tvShowContents.length;
+      _tvShowIndex = tvShowContents.length;
       notifyListeners();
     });
   }

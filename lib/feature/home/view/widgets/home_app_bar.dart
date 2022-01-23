@@ -55,12 +55,12 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                       children: [
                         CircleAvatar(
                           radius: 18,
-                          backgroundColor: homeProvider.colorFromPoints(getVoteAverage()),
+                          backgroundColor: homeProvider.colorFromPoints(_getVoteAverage()),
                           child: CircleAvatar(
                             radius: 15,
                             backgroundColor: AppColors.saltBlack,
                             child: Text(
-                              getVoteAverage().toString(),
+                              _getVoteAverage().toString(),
                               style: AppTextStyles.latoBold18Pt.copyWith(
                                 fontSize: 12,
                                 color: AppColors.white,
@@ -141,7 +141,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
         children: [
           Consumer<HomeProvider>(builder: (context, HomeProvider homeProvider, child) {
             return Image.network(
-              getPosterPath(),
+              _getPosterPath(),
               fit: BoxFit.fill,
               height: ScreenSize().getHeightPercent(.45),
               width: ScreenSize().getWidthPercent(1),
@@ -170,7 +170,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
     );
   }
 
-  double getVoteAverage() {
+  double _getVoteAverage() {
     if (type == ContentEnum.MOVIE) {
       return serviceLocator<HomeProvider>().movieContents[contentIndex!].voteAverage;
     } else if (type == ContentEnum.TVSHOW) {
@@ -179,7 +179,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
       return 0;
   }
 
-  String getPosterPath() {
+  String _getPosterPath() {
     if (type == ContentEnum.MOVIE) {
       return serviceLocator<HomeProvider>().movieContents[contentIndex!].posterPath;
     } else if (type == ContentEnum.TVSHOW) {
