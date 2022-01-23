@@ -10,7 +10,6 @@ class TvShowMovieCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        //TODO: Api bağlantısı yapılınca request atılması gerekiyor. Detay sayfasının initState'inde
         Go.to.page(
           TVSHOWMOVIEDETAILPAGEROUTE,
           arguments: SeriesMovieArgument(contentIndex: contentIndex, type: type),
