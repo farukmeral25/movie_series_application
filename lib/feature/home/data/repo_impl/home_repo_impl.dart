@@ -8,7 +8,7 @@ class HomeRepoImplements implements HomeRepository {
     required this.mainBaseGet,
   });
   @override
-  Future<Either<Failure, List<MovieContent>>> fetchPopulerMovie(PageArgument argument) async {
+  Future<Either<Failure, List<MovieContent>>> fetchPopulerMovie() async {
     final fetchPopulerMovieEither = await mainBaseGet(
       GetRequestParams(
         endPoint: MainEndpoints.FETCH_POPULER_MOVIE,
@@ -23,7 +23,7 @@ class HomeRepoImplements implements HomeRepository {
   }
 
   @override
-  Future<Either<Failure, List<TvShowContent>>> fetchPopulerTvShow(PageArgument argument) async {
+  Future<Either<Failure, List<TvShowContent>>> fetchPopulerTvShow() async {
     final fetchPopulerTvShowEither = await mainBaseGet(
       GetRequestParams(
         endPoint: MainEndpoints.FETCH_POPULER_TV_SHOW,

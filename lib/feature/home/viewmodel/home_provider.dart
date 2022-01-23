@@ -8,15 +8,29 @@ import 'package:movie_series_application/feature/_feature_exports.dart';
 class HomeProvider with ChangeNotifier {
   HomeProvider(this._fetchPopulerMovieUsecase, this._fetchPopulerTvShowUsecase, this._fetchTvShowDetailUsecase) {
     fetchTvShowContent();
-
     fetchMovieContent().then((value) {
       getLatestContent();
+    });
+    movieScrollController.addListener(() {
+      if (movieScrollController.position.pixels == movieScrollController.position.maxScrollExtent) {
+        fetchMovieContent();
+      }
+    });
+    tvShowScrollController.addListener(() {
+      if (tvShowScrollController.position.pixels == tvShowScrollController.position.maxScrollExtent) {
+        fetchTvShowContent();
+      }
+      notifyListeners();
     });
   }
 
   final FetchPopulerMovieUsecase _fetchPopulerMovieUsecase;
   final FetchPopulerTvShowUsecase _fetchPopulerTvShowUsecase;
   final FetchTvShowDetailUsecase _fetchTvShowDetailUsecase;
+
+  //* Scroll Controllers
+  final ScrollController movieScrollController = ScrollController();
+  final ScrollController tvShowScrollController = ScrollController();
 
   //! Variables
   //* Lists
@@ -26,10 +40,19 @@ class HomeProvider with ChangeNotifier {
 
   bool _progress = true;
 
+  //* Bu parametrelerin olma sebebi: İmage pathler çalışmadığından dolayı random olarak
+  //* atadığımız imageleri , daha önce çektiğimiz verilere de tekrar random image vermesini
+  //* önlemek için böyle bir yola başvuruldu. Bu yolda son yapılan listenin lenghti bu indexlere veriliyor.
+  //* Böylece tekrar tekrar imagelere görsel verilmiyor.
+  int tvShowIndex = 0;
+  int movieIndex = 0;
+
   //* Texts
 
   final String _populerTvShow = "Populer TV Shows";
   final String _populerMovies = "Populer Movies";
+
+  //*Late Params
 
   late TvShowContent tvShowContent;
   late MovieContent latestMovieContent;
@@ -76,24 +99,28 @@ class HomeProvider with ChangeNotifier {
 
   /// Popüler Film verilerini çeker.
   Future<void> fetchMovieContent() async {
-    final fetchMovieContentEither = await _fetchPopulerMovieUsecase(PageArgument(page: 1));
+    MainEndpoints.FETCH_POPULER_MOVIE.appendPage();
+    final fetchMovieContentEither = await _fetchPopulerMovieUsecase(const NoParams());
     return fetchMovieContentEither.fold((failure) {}, (data) {
       movieContents.addAll(data);
-      for (var i = 0; i < movieContents.length; i++) {
+      for (var i = movieIndex; i < movieContents.length; i++) {
         movieContents[i].posterPath = posterPaths[Random().nextInt(7)];
       }
+      movieIndex = movieContents.length;
       notifyListeners();
     });
   }
 
   /// Popüler Tv Show verilerini çeker.
   Future<void> fetchTvShowContent() async {
-    final fetchTvShowContentEither = await _fetchPopulerTvShowUsecase(PageArgument(page: 1));
+    MainEndpoints.FETCH_POPULER_TV_SHOW.appendPage();
+    final fetchTvShowContentEither = await _fetchPopulerTvShowUsecase(const NoParams());
     return fetchTvShowContentEither.fold((failure) {}, (data) {
       tvShowContents.addAll(data);
-      for (var i = 0; i < tvShowContents.length; i++) {
+      for (var i = tvShowIndex; i < tvShowContents.length; i++) {
         tvShowContents[i].posterPath = posterPaths[Random().nextInt(7)];
       }
+      tvShowIndex = tvShowContents.length;
       notifyListeners();
     });
   }

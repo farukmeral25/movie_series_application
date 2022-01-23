@@ -1,5 +1,7 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sized_box_for_whitespace
 
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:movie_series_application/core/_core_exports.dart';
 import 'package:movie_series_application/core/init/_init_exports.dart';
@@ -17,7 +19,7 @@ class HomePage extends StatelessWidget {
       body: Consumer<HomeProvider>(
         builder: (context, HomeProvider homeProvider, child) {
           return homeProvider.progress
-              ? Center(child: CupertinoActivityIndicator())
+              ? _buildProgress()
               : CustomScrollView(
                   slivers: [
                     HomeAppBar(),
@@ -66,19 +68,28 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  Center _buildProgress() {
+    return Center(
+      child: Platform.isIOS ? CupertinoActivityIndicator() : CircularProgressIndicator(),
+    );
+  }
+
   Widget _buildPopulerTvShows() {
     return Consumer<HomeProvider>(
       builder: (context, HomeProvider homeProvider, child) {
         return SizedBox(
           height: ScreenSize().getHeightPercent(.25),
           child: ListView.separated(
+            controller: homeProvider.tvShowScrollController,
             scrollDirection: Axis.horizontal,
-            itemCount: homeProvider.tvShowContents.length,
+            itemCount: homeProvider.tvShowContents.length + 1,
             itemBuilder: (BuildContext context, int index) {
-              return TvShowMovieCard(
-                contentIndex: index,
-                type: ContentEnum.TVSHOW,
-              );
+              return index == (homeProvider.tvShowContents.length)
+                  ? _buildProgress()
+                  : TvShowMovieCard(
+                      contentIndex: index,
+                      type: ContentEnum.TVSHOW,
+                    );
             },
             separatorBuilder: (BuildContext context, int index) {
               return SizedBox(
@@ -97,13 +108,16 @@ class HomePage extends StatelessWidget {
         return SizedBox(
           height: ScreenSize().getHeightPercent(.25),
           child: ListView.separated(
+            controller: homeProvider.movieScrollController,
             scrollDirection: Axis.horizontal,
-            itemCount: homeProvider.movieContents.length,
+            itemCount: homeProvider.movieContents.length + 1,
             itemBuilder: (BuildContext context, int index) {
-              return TvShowMovieCard(
-                contentIndex: index,
-                type: ContentEnum.MOVIE,
-              );
+              return index == (homeProvider.movieContents.length)
+                  ? _buildProgress()
+                  : TvShowMovieCard(
+                      contentIndex: index,
+                      type: ContentEnum.MOVIE,
+                    );
             },
             separatorBuilder: (BuildContext context, int index) {
               return SizedBox(
