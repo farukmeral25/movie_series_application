@@ -1,11 +1,17 @@
 // ignore_for_file: constant_identifier_names
 
-enum MainEndpoints { FETCH_POPULER_MOVIE, FETCH_POPULER_TV_SHOW, FETCH_POPULER_TV_SHOW_DETAIL }
+enum MainEndpoints {
+  FETCH_POPULER_MOVIE,
+  FETCH_POPULER_TV_SHOW,
+  FETCH_POPULER_TV_SHOW_DETAIL,
+}
+
 enum MainEndpointsType {
   POST,
   GET,
   MULTI_PART_FORM_DATA,
 }
+
 const String apiKey = "0921a11ff74eb51180882534314e79af";
 late int id;
 int _moviePage = 0;

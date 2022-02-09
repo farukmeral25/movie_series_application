@@ -9,7 +9,7 @@ Future<void> init() async {
   //! External
 
   //? Dio Client
-  serviceLocator.registerLazySingleton(() => Dio());
+  serviceLocator.registerFactory(() => Dio());
 
   //! Core
 

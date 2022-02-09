@@ -88,9 +88,9 @@ class HomeProvider with ChangeNotifier {
     for (var i = 0; i < movieContents.length - 1; i++) {
       if (latestMovieContent.releaseDate.isBefore(movieContents[i + 1].releaseDate)) {
         latestMovieContent = movieContents[i + 1];
-        latestMovieContent.posterPath = posterPaths[2];
       }
     }
+    latestMovieContent.posterPath = posterPaths[2];
     progress = false;
     notifyListeners();
   }
